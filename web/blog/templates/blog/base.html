@@ -1,0 +1,65 @@
+{% load blog_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<link href = "{% static 'css/bootstrap.min.css' %}" rel = "stylesheet">
+	<link href = "{% static 'css/base.css' %}" rel = "stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #a4edc7;">
+		<a class="navbar-brand" href="{% url 'index' %}"><img src = "{% static '/img/icon.png'%} " width = "70px"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'ask' %}">Ask <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+      <li class="nav-item">
+      	<form class="form-inline my-2 my-lg-0">
+      <input class="form-control my-2 my-sm-0 mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search">
+    </form>
+      </li>
+    </ul>
+    <span class="navbar-nav mt-2 mt-lg-0">
+      {% if request.user.is_authenticated %}
+        <div class="nav-link active">Hello {{ request.user.first_name }},</div>
+        <a class="nav-link" href="{% url "logout" %}">Logout</a>
+      {% else %}
+        <a class="nav-link" href="{% url "login" %}">Log-in</a>
+      {% endif %}
+    </span>
+  </div>
+</nav>
+	<div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+  <div id="sidebar">
+    <h2>My blog</h2>
+    <p>There are {% total_posts %} posts so far.</p>
+    <p><a href="#" %}">Subscribe to my RSS feed</a></p>
+    
+    <h3>Latest posts</h3>
+    {% show_latest_posts 3 %}
+    
+    <h3>Popular posts</h3>
+    {% get_most_commented_posts as most_commented_posts %}
+    <ul>
+    {% for post in most_commented_posts %}
+      <li>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</body>
+</html>
